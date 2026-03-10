@@ -1,0 +1,40 @@
+#!/bin/sh
+
+get_wifi() {
+	ssid=$(nmcli connection show --active | grep wifi | sed -E 's/\s+\S+\s+\S+\s+\S+\s*$//')
+	[ -n "$ssid" ] && echo "WIFI: $ssid"
+}
+
+get_ethernet() {
+	if [ -n "$(nmcli connection show --active | awk '$(NF-1)=="ethernet"{ print $(NF-1) }')" ]; then
+		echo "ETH: up"
+		return 0
+	fi
+}
+
+get_volume() {
+	default_sink=$(pactl get-default-sink)
+	volume_percentage="$(pactl get-sink-volume "$default_sink" | awk '{print $5}')"
+	if pactl get-sink-mute "$default_sink" | grep -qiF 'yes'; then
+		volume_mute="[M]"
+	fi
+	echo "VOL: $volume_percentage$volume_mute"
+}
+
+get_battery() {
+	if [ -d /sys/class/power_supply/BAT0 ]; then
+		battery=$(cat /sys/class/power_supply/BAT0/capacity)
+		status=$(cat /sys/class/power_supply/BAT0/status)
+		[ "$status" = "Charging" ] && status="CHA" || status="BAT"
+		echo "$status: $battery%"
+	fi
+}
+
+get_status() {
+	echo " $(get_volume) | $(get_wifi) | $(get_ethernet) | $(free -h | awk '/^Mem:/{print "MEM: " $3 "/" $2}') | $(get_battery) | $(date "+%Y %b %d (%a) %H:%M")" | sed -E -e 's/\|[\| ]*\|/|/g' -e 's/^\s*\|/ /g'
+}
+
+while :; do
+	get_status
+	sleep 2
+done
