@@ -75,8 +75,6 @@ for_window [app_id="pinentry-qt"] floating enable
 for_window [app_id="pinentry-gtk-2"] floating enable
 for_window [title="(?i)pinentry"] floating enable
 
-for_window [shell="(?i)xwayland"] scale 1 
-
 #
 # Essential bindings
 #
@@ -183,7 +181,6 @@ bindsym $mod+Shift+x exec $HOME/.local/scripts/shutdown_dmenu
 bindsym $mod+Shift+z exec $HOME/.local/scripts/reboot_dmenu
 bindsym $mod+Shift+w exec $HOME/.local/scripts/weather.sh
 bindsym $mod+Shift+b exec $HOME/.local/scripts/bookmarks dmenu
-
 
 default_border pixel 2
 focus_wrapping no
