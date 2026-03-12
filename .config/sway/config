@@ -19,7 +19,7 @@ set $right l
 
 set $term foot
 set $browser $BROWSER
-set $menu "wmenu-run -f 'JetBrainsMono Nerd Font 10' -N '15161e' -n 'c0caf5' -s 'c0caf5' -m 'c0caf5'"
+set $menu "wmenu-run -f 'JetBrainsMono Nerd Font 14px' -N '15161e' -n 'c0caf5' -s 'c0caf5' -m 'c0caf5'"
 
 # Output configuration
 output * bg ~/.local/share/bg fill
