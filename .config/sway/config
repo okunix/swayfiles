@@ -26,7 +26,7 @@ output * bg ~/.local/share/bg fill
 output eDP-1 resolution 2880x1800 scale 2
 
 # XWayland config
-xwayland enable 
+xwayland enable
 exec_always xrdb -merge $HOME/.Xresources
 
 # Idle configuration
@@ -192,7 +192,7 @@ workspace_layout tabbed
 bar {
     position top
 
-    status_command statusbar 
+    status_command $HOME/.local/bin/statusbar
 
     colors {
         statusline #c0caf5
