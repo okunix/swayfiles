@@ -23,7 +23,6 @@ set $menu "wmenu-run -f 'JetBrainsMono Nerd Font 14px' -N '15161e' -n 'c0caf5' -
 
 # Output configuration
 output * bg ~/.local/share/bg fill
-output eDP-1 resolution 2880x1800 scale 2
 
 # XWayland config
 xwayland enable
