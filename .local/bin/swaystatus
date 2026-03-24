@@ -1,0 +1,204 @@
+#!/usr/bin/env python3
+import json
+import re
+import sys
+import os
+import time
+import subprocess
+from datetime import datetime
+from dataclasses import dataclass, asdict
+import signal
+from typing import Any, Callable
+
+
+@dataclass
+class Header:
+    version: int = 1
+    click_events: bool = True
+    stop_signal: str = "SIGHUP"
+    cont_signal: str = "SIGCONT"
+
+
+class Block:
+    def __init__(
+        self,
+        full_text: str,
+        name: str,
+        short_text: str = "",
+        color: str = "",
+        min_width: str = "100%",
+        urgent: bool = False,
+        align: str = "center",
+        background: str = "",
+        separator: bool = True,
+        separator_block_width: int = 10,
+        markup: str = "pango",
+        border: str = "",
+        border_left: int = 0,
+        border_right: int = 0,
+        border_top: int = 0,
+        border_bottom: int = 0,
+    ):
+        self.full_text = full_text
+        self.name = name
+
+        if short_text == "" and len(full_text) >= 3:
+            self.short_text = full_text[:3]
+        else:
+            self.short_text = short_text
+
+        self.color = color
+        self.min_width = min_width
+        self.urgent = urgent
+        self.align = align
+        self.background = background
+        self.separator = separator
+        self.separator_block_width = separator_block_width
+        self.markup = markup
+        self.border = border
+        self.border_left = border_left
+        self.border_right = border_right
+        self.border_top = border_top
+        self.border_bottom = border_bottom
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "full_text": self.full_text,
+            "name": self.name,
+            "short_text": self.short_text,
+            "color": self.color,
+            "min_width": self.min_width,
+            "urgent": self.urgent,
+            "align": self.align,
+            "background": self.background,
+            "separator": self.separator,
+            "separator_block_width": self.separator_block_width,
+            "markup": self.markup,
+            "border": self.border,
+            "border_left": self.border_left,
+            "border_right": self.border_right,
+            "border_top": self.border_top,
+            "border_bottom": self.border_bottom,
+        }
+
+
+def stop_handler(*args):
+    sys.exit(1)
+
+
+def cont_handler(blocks: list[Callable[[], Block | None]]) -> Callable:
+    def f(*args):
+        print_blocks(blocks)
+
+    return f
+
+
+def print_header(header: Header):
+    print(json.dumps(asdict(header)))
+    print("[", end="")
+    sys.stdout.flush()
+
+
+def print_blocks(blocks: list[Callable[[], Block | None]]):
+    block_list = []
+    for block in blocks:
+        text = block()
+        if text is None:
+            continue
+        block_list.append(text.to_dict())
+    blocks_json = json.dumps(block_list)
+    print(blocks_json, end=",", flush=True)
+
+
+#
+# User defined blocks
+#
+
+
+def datetime_block() -> Callable[[], Block | None]:
+    def func() -> Block | None:
+        time_full = datetime.now().strftime("%d/%m/%Y %a %H:%M")
+        time_short = datetime.now().strftime("%d %H:%M")
+        return Block(
+            full_text=time_full,
+            name="datetime",
+            short_text=time_short,
+        )
+
+    return func
+
+
+def battery_block() -> Callable[[], Block | None]:
+    def func() -> Block | None:
+        if not os.path.exists("/sys/class/power_supply/BAT0"):
+            return None
+        capacity: int = 0
+        with open("/sys/class/power_supply/BAT0/capacity") as file:
+            capacity = int(file.read())
+        with open("/sys/class/power_supply/BAT0/status") as file:
+            status = file.read().strip("\n ")
+        if status != "Charging":
+            status = ""
+        else:
+            status = f" ({status})"
+        return Block(
+            full_text=f"Battery: {capacity}%{status}",
+            name="battery",
+            urgent=capacity < 21,
+            short_text=f"B: {capacity}",
+        )
+
+    return func
+
+
+def volume_block() -> Callable[[], Block | None]:
+    percent_regex = re.compile(
+        r"^.*?\s(?P<percent>[0-9\.]+)(?:\s(?P<muted>\[MUTED\]))?$"
+    )
+
+    def func() -> Block | None:
+        nonlocal percent_regex
+        res = subprocess.run(
+            ["wpctl", "get-volume", "@DEFAULT_SINK@"], capture_output=True
+        )
+        percent_match = percent_regex.search(res.stdout.decode())
+        assert percent_match is not None
+        percent_str = percent_match.group("percent")
+        percent = int(float(percent_str) * 100)
+        muted = ""
+        if percent_match.group("muted") is not None:
+            muted = " (Muted)"
+        return Block(
+            full_text=f"Volume: {percent}%{muted}",
+            name="volume",
+            short_text=f"V: {percent}",
+        )
+
+    return func
+
+
+if __name__ == "__main__":
+    PID_FILE = f"/run/user/{os.getuid()}/swaystatus.pid"
+
+    if len(sys.argv) == 2:
+        if sys.argv[1] == "refresh":
+            with open(PID_FILE, "r") as file:
+                os.kill(int(file.read()), signal.SIGCONT)
+            sys.exit(0)
+
+    with open(PID_FILE, "w") as file:
+        file.write(str(os.getpid()))
+
+    header = Header(click_events=False)
+    print_header(header)
+
+    blocks: list[Callable[[], Block | None]] = [
+        volume_block(),
+        battery_block(),
+        datetime_block(),
+    ]
+    signal.signal(signal.SIGCONT, cont_handler(blocks))
+    signal.signal(signal.SIGHUP, stop_handler)
+    while True:
+        print_blocks(blocks)
+        time.sleep(2)
