@@ -77,12 +77,11 @@ def print_blocks(blocks: list[Callable[[], Block | None]]):
 
 def datetime_block() -> Callable[[], Block | None]:
     def func() -> Block | None:
-        time_full = datetime.now().strftime("%m/%d %a %H:%M")
-        time_short = datetime.now().strftime("%d %H%M")
+        now = datetime.now()
         return Block(
-            full_text=time_full,
+            full_text=now.strftime("%m/%d %a %H:%M"),
             name="datetime",
-            short_text=time_short,
+            short_text=now.strftime("%d %H%M"),
         )
 
     return func
@@ -92,19 +91,41 @@ def battery_block() -> Callable[[], Block | None]:
     def func() -> Block | None:
         if not os.path.exists("/sys/class/power_supply/BAT0"):
             return None
-        capacity: int = 0
         with open("/sys/class/power_supply/BAT0/capacity") as file:
             capacity = int(file.read())
         with open("/sys/class/power_supply/BAT0/status") as file:
             status = file.read().strip("\n ")
+
         icon = "󰁹"
+        if capacity < 11:
+            icon = "󰁺"
+        elif capacity < 21:
+            icon = "󰁻"
+        elif capacity < 31:
+            icon = "󰁼"
+        elif capacity < 41:
+            icon = "󰁽"
+        elif capacity < 51:
+            icon = "󰁾"
+        elif capacity < 61:
+            icon = "󰁿"
+        elif capacity < 71:
+            icon = "󰂀"
+        elif capacity < 81:
+            icon = "󰂁"
+        elif capacity < 91:
+            icon = "󰂂"
         if status.lower() == "charging":
             icon = "󰂄"
+        color = ""
+        if capacity < 21:
+            color = "#ff5555"
+
         return Block(
             full_text=f"{icon} {capacity}%",
             name="battery",
-            urgent=capacity < 21,
             short_text=f"B{capacity}",
+            color=color,
         )
 
     return func
