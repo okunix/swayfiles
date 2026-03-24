@@ -20,7 +20,7 @@ set $right l
 set $term foot
 set $browser $BROWSER
 set $menu "wmenu-run -f 'JetBrainsMono Nerd Font 14px' -N '15161e' -n 'c0caf5' -s 'c0caf5' -m 'c0caf5'"
-set $statusbar "$HOME/.local/bin/statusbar"
+set $statusbar "$HOME/.local/bin/swaystatus"
 set $statusbar_refresh $statusbar "refresh"
 
 # Output configuration
@@ -199,6 +199,7 @@ bar {
         statusline #c0caf5
         background #15161e
         inactive_workspace #414868 #1a1b26 #c0caf5
+        separator #414868
     }
 }
 

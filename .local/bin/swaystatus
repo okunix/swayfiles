@@ -77,8 +77,8 @@ def print_blocks(blocks: list[Callable[[], Block | None]]):
 
 def datetime_block() -> Callable[[], Block | None]:
     def func() -> Block | None:
-        time_full = datetime.now().strftime("%d/%m/%Y %a %H:%M")
-        time_short = datetime.now().strftime("%d %H:%M")
+        time_full = datetime.now().strftime("%m/%d %a %H:%M")
+        time_short = datetime.now().strftime("%d %H%M")
         return Block(
             full_text=time_full,
             name="datetime",
@@ -97,15 +97,70 @@ def battery_block() -> Callable[[], Block | None]:
             capacity = int(file.read())
         with open("/sys/class/power_supply/BAT0/status") as file:
             status = file.read().strip("\n ")
-        if status != "Charging":
-            status = ""
-        else:
-            status = f" ({status})"
+        icon = "󰁹"
+        if status.lower() == "charging":
+            icon = "󰂄"
         return Block(
-            full_text=f"Battery: {capacity}%{status}",
+            full_text=f"{icon} {capacity}%",
             name="battery",
             urgent=capacity < 21,
-            short_text=f"B: {capacity}",
+            short_text=f"B{capacity}",
+        )
+
+    return func
+
+
+def wifi_block() -> Callable[[], Block | None]:
+    def func() -> Block | None:
+        cmd = subprocess.run(
+            [
+                "/bin/sh",
+                "-c",
+                "nmcli -g NAME,TYPE connection show --active | grep -F wireless | head -1 | cut -d: -f1",
+            ],
+            capture_output=True,
+        )
+        ssid = cmd.stdout.decode().strip("\n ")
+        return Block(
+            full_text=f"  {ssid}",
+            name="wifi",
+            short_text=f"W{ssid}",
+        )
+
+    return func
+
+
+def ethernet_block() -> Callable[[], Block | None]:
+    def func() -> Block | None:
+        cmd = subprocess.run(
+            [
+                "/bin/sh",
+                "-c",
+                "nmcli -g NAME,TYPE connection show --active | grep -q ethernet",
+            ],
+        )
+        if cmd.returncode != 0:
+            return None
+        return Block(
+            full_text=f"  UP",
+            name="ethernet",
+            short_text="E",
+        )
+
+    return func
+
+
+def memory_block() -> Callable[[], Block | None]:
+    def func() -> Block | None:
+        cmd = subprocess.run(
+            ["/bin/sh", "-c", "free -h | awk '/^Mem:/{ print $3 }'"],
+            capture_output=True,
+        )
+        output = cmd.stdout.decode().strip("\n ")
+        return Block(
+            full_text=f"󰉉 {output}",
+            name="memory",
+            short_text=f"M{output}",
         )
 
     return func
@@ -125,13 +180,13 @@ def volume_block() -> Callable[[], Block | None]:
         assert percent_match is not None
         percent_str = percent_match.group("percent")
         percent = int(float(percent_str) * 100)
-        muted = ""
+        icon = " "
         if percent_match.group("muted") is not None:
-            muted = " (Muted)"
+            icon = " "
         return Block(
-            full_text=f"Volume: {percent}%{muted}",
+            full_text=f"{icon} {percent}%",
             name="volume",
-            short_text=f"V: {percent}",
+            short_text=f"V{percent}",
         )
 
     return func
@@ -156,6 +211,9 @@ def main():
 
     blocks: list[Callable[[], Block | None]] = [
         volume_block(),
+        wifi_block(),
+        ethernet_block(),
+        memory_block(),
         battery_block(),
         datetime_block(),
     ]
