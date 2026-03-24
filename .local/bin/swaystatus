@@ -161,6 +161,8 @@ def main():
     ]
     signal.signal(signal.SIGCONT, cont_handler(blocks))
     signal.signal(signal.SIGHUP, stop_handler)
+    signal.signal(signal.SIGINT, stop_handler)
+    signal.signal(signal.SIGTERM, stop_handler)
     while True:
         print_blocks(blocks)
         time.sleep(2)
