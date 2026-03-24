@@ -1,5 +1,12 @@
 #!/bin/sh
 
+PID_FILE="/run/user/$(id -u)/statusbar.pid"
+
+if [ -n "$1" ]; then
+	[ "$1" = 'refresh' ] && kill -CONT "$(cat "$PID_FILE")"
+	exit
+fi
+
 get_wifi() {
 	ssid=$(nmcli connection show --active | grep wifi | sed -E 's/\s+\S+\s+\S+\s+\S+\s*$//')
 	[ -n "$ssid" ] && echo "WIFI: $ssid"
@@ -34,7 +41,12 @@ get_status() {
 	echo " $(get_volume) | $(get_wifi) | $(get_ethernet) | $(free -h | awk '/^Mem:/{print "MEM: " $3 "/" $2}') | $(get_battery) | $(date "+%Y %b %d (%a) %H:%M")" | sed -E -e 's/\|[\| ]*\|/|/g' -e 's/^\s*\|/ /g'
 }
 
+trap 'get_status' CONT
+
+printf "%s" $$ >"$PID_FILE"
+
 while :; do
 	get_status
-	sleep 2
+	sleep 2 &
+	wait $!
 done
