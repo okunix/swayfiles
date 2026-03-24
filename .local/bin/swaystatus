@@ -8,7 +8,7 @@ import subprocess
 from datetime import datetime
 from dataclasses import dataclass, asdict
 import signal
-from typing import Any, Callable
+from typing import Callable
 
 
 @dataclass
@@ -19,75 +19,32 @@ class Header:
     cont_signal: str = "SIGCONT"
 
 
+@dataclass
 class Block:
-    def __init__(
-        self,
-        full_text: str,
-        name: str,
-        short_text: str = "",
-        color: str = "",
-        min_width: str = "100%",
-        urgent: bool = False,
-        align: str = "center",
-        background: str = "",
-        separator: bool = True,
-        separator_block_width: int = 10,
-        markup: str = "pango",
-        border: str = "",
-        border_left: int = 0,
-        border_right: int = 0,
-        border_top: int = 0,
-        border_bottom: int = 0,
-    ):
-        self.full_text = full_text
-        self.name = name
-
-        if short_text == "" and len(full_text) >= 3:
-            self.short_text = full_text[:3]
-        else:
-            self.short_text = short_text
-
-        self.color = color
-        self.min_width = min_width
-        self.urgent = urgent
-        self.align = align
-        self.background = background
-        self.separator = separator
-        self.separator_block_width = separator_block_width
-        self.markup = markup
-        self.border = border
-        self.border_left = border_left
-        self.border_right = border_right
-        self.border_top = border_top
-        self.border_bottom = border_bottom
-
-    def to_dict(self) -> dict[str, Any]:
-        return {
-            "full_text": self.full_text,
-            "name": self.name,
-            "short_text": self.short_text,
-            "color": self.color,
-            "min_width": self.min_width,
-            "urgent": self.urgent,
-            "align": self.align,
-            "background": self.background,
-            "separator": self.separator,
-            "separator_block_width": self.separator_block_width,
-            "markup": self.markup,
-            "border": self.border,
-            "border_left": self.border_left,
-            "border_right": self.border_right,
-            "border_top": self.border_top,
-            "border_bottom": self.border_bottom,
-        }
+    full_text: str
+    name: str
+    short_text: str = ""
+    color: str = ""
+    min_width: str = "100%"
+    urgent: bool = False
+    align: str = "center"
+    background: str = ""
+    separator: bool = True
+    separator_block_width: int = 10
+    markup: str = "pango"
+    border: str = ""
+    border_left: int = 0
+    border_right: int = 0
+    border_top: int = 0
+    border_bottom: int = 0
 
 
-def stop_handler(*args):
+def stop_handler(*_):
     sys.exit(1)
 
 
 def cont_handler(blocks: list[Callable[[], Block | None]]) -> Callable:
-    def f(*args):
+    def f(*_):
         print_blocks(blocks)
 
     return f
@@ -105,7 +62,7 @@ def print_blocks(blocks: list[Callable[[], Block | None]]):
         text = block()
         if text is None:
             continue
-        block_list.append(text.to_dict())
+        block_list.append(asdict(text))
     blocks_json = json.dumps(block_list)
     print(blocks_json, end=",", flush=True)
 
