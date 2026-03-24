@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 import json
-import re
-import sys
 import os
-import time
-import subprocess
-from datetime import datetime
-from dataclasses import dataclass, asdict
+import re
 import signal
+import subprocess
+import sys
+import time
+from dataclasses import asdict, dataclass
+from datetime import datetime
 from typing import Callable
+
+PID_FILE = f"/run/user/{os.getuid()}/swaystatus.pid"
 
 
 @dataclass
@@ -40,6 +42,7 @@ class Block:
 
 
 def stop_handler(*_):
+    os.remove(PID_FILE)
     sys.exit(1)
 
 
@@ -134,14 +137,16 @@ def volume_block() -> Callable[[], Block | None]:
     return func
 
 
-if __name__ == "__main__":
-    PID_FILE = f"/run/user/{os.getuid()}/swaystatus.pid"
-
+def main():
     if len(sys.argv) == 2:
         if sys.argv[1] == "refresh":
             with open(PID_FILE, "r") as file:
                 os.kill(int(file.read()), signal.SIGCONT)
             sys.exit(0)
+
+    if os.path.exists(PID_FILE):
+        print("swaystatus is already running", file=sys.stderr)
+        sys.exit(1)
 
     with open(PID_FILE, "w") as file:
         file.write(str(os.getpid()))
@@ -159,3 +164,12 @@ if __name__ == "__main__":
     while True:
         print_blocks(blocks)
         time.sleep(2)
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    finally:
+        with open(PID_FILE) as file:
+            if os.getpid() == int(file.read()):
+                stop_handler()
