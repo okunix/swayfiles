@@ -63,11 +63,9 @@ def print_blocks(blocks: list[Callable[[], Block | None]]):
     block_list = []
     for block in blocks:
         text = block()
-        if text is None:
-            continue
-        block_list.append(asdict(text))
-    blocks_json = json.dumps(block_list)
-    print(blocks_json, end=",", flush=True)
+        if text is not None:
+            block_list.append(asdict(text))
+    print(json.dumps(block_list), end=",", flush=True)
 
 
 #
@@ -94,7 +92,7 @@ def battery_block() -> Callable[[], Block | None]:
         with open("/sys/class/power_supply/BAT0/capacity") as file:
             capacity = int(file.read())
         with open("/sys/class/power_supply/BAT0/status") as file:
-            status = file.read().strip("\n ")
+            status = file.read().strip()
 
         icon = "󰁹"
         if capacity < 11:
@@ -183,7 +181,7 @@ def memory_block() -> Callable[[], Block | None]:
         )
         if cmd.returncode != 0:
             return None
-        output = cmd.stdout.decode().strip("\n ")
+        output = cmd.stdout.decode().strip()
         return Block(
             full_text=f"󰉉 {output}",
             name="memory",
