@@ -141,7 +141,11 @@ def wifi_block() -> Callable[[], Block | None]:
             ],
             capture_output=True,
         )
-        ssid = cmd.stdout.decode().strip("\n ")
+        if cmd.returncode != 0:
+            return None
+        ssid = cmd.stdout.decode().strip()
+        if ssid.strip() == "":
+            return None
         return Block(
             full_text=f"  {ssid}",
             name="wifi",
@@ -177,6 +181,8 @@ def memory_block() -> Callable[[], Block | None]:
             ["/bin/sh", "-c", "free -h | awk '/^Mem:/{ print $3 }'"],
             capture_output=True,
         )
+        if cmd.returncode != 0:
+            return None
         output = cmd.stdout.decode().strip("\n ")
         return Block(
             full_text=f"󰉉 {output}",
@@ -194,10 +200,12 @@ def volume_block() -> Callable[[], Block | None]:
 
     def func() -> Block | None:
         nonlocal percent_regex
-        res = subprocess.run(
+        cmd = subprocess.run(
             ["wpctl", "get-volume", "@DEFAULT_SINK@"], capture_output=True
         )
-        percent_match = percent_regex.search(res.stdout.decode())
+        if cmd.returncode != 0:
+            return None
+        percent_match = percent_regex.search(cmd.stdout.decode())
         assert percent_match is not None
         percent_str = percent_match.group("percent")
         percent = int(float(percent_str) * 100)
