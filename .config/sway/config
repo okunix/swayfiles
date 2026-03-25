@@ -194,6 +194,7 @@ bar {
     position top
 
     status_command $statusbar
+    status_edge_padding 4
 
     colors {
         statusline #c0caf5
