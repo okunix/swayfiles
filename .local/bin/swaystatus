@@ -219,6 +219,28 @@ def volume_block() -> Callable[[], Block | None]:
     return func
 
 
+def mpd_block() -> Callable[[], Block | None]:
+    paused_regex = re.compile(r"^\[paused\]")
+
+    def func() -> Block | None:
+        cmd = subprocess.run(["/bin/sh", "-c", "mpc"], capture_output=True)
+        if cmd.returncode != 0:
+            return None
+        lines = cmd.stdout.decode().splitlines()
+        if paused_regex.match(lines[1]):
+            return None
+        song = lines[0]
+        if len(song) > 30:
+            song = song[:27] + "..."
+        return Block(
+            full_text=f"󰎇 {song}",
+            name="mpd",
+            short_text=f"{song}",
+        )
+
+    return func
+
+
 def main():
     if len(sys.argv) == 2:
         if sys.argv[1] == "refresh":
@@ -237,6 +259,7 @@ def main():
     print_header(header)
 
     blocks: list[Callable[[], Block | None]] = [
+        # mpd_block(),
         volume_block(),
         wifi_block(),
         ethernet_block(),
