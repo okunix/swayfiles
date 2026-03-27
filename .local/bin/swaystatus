@@ -42,7 +42,8 @@ class Block:
 
 
 def stop_handler(*_):
-    os.remove(PID_FILE)
+    if os.path.exists(PID_FILE):
+        os.remove(PID_FILE)
     sys.exit(1)
 
 
@@ -242,12 +243,6 @@ def mpd_block() -> Callable[[], Block | None]:
 
 
 def main():
-    if len(sys.argv) == 2:
-        if sys.argv[1] == "refresh":
-            with open(PID_FILE, "r") as file:
-                os.kill(int(file.read()), signal.SIGCONT)
-            sys.exit(0)
-
     if os.path.exists(PID_FILE):
         print("swaystatus is already running", file=sys.stderr)
         sys.exit(1)
@@ -277,9 +272,12 @@ def main():
 
 
 if __name__ == "__main__":
-    try:
+    args = sys.argv[1:]
+    if len(args) == 0:
         main()
-    finally:
-        with open(PID_FILE) as file:
-            if os.getpid() == int(file.read()):
-                stop_handler()
+    elif len(args) == 1:
+        if args[0] == "refresh":
+            with open(PID_FILE, "r") as file:
+                os.kill(int(file.read()), signal.SIGCONT)
+            sys.exit(0)
+    sys.exit(1)
