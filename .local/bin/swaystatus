@@ -10,8 +10,6 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 from typing import Callable
 
-PID_FILE = f"/run/user/{os.getuid()}/swaystatus.pid"
-
 
 @dataclass
 class Header:
@@ -42,8 +40,6 @@ class Block:
 
 
 def stop_handler(*_):
-    if os.path.exists(PID_FILE):
-        os.remove(PID_FILE)
     sys.exit(1)
 
 
@@ -243,13 +239,6 @@ def mpd_block() -> Callable[[], Block | None]:
 
 
 def main():
-    if os.path.exists(PID_FILE):
-        print("swaystatus is already running", file=sys.stderr)
-        sys.exit(1)
-
-    with open(PID_FILE, "w") as file:
-        file.write(str(os.getpid()))
-
     header = Header(click_events=False)
     print_header(header)
 
@@ -272,12 +261,4 @@ def main():
 
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    if len(args) == 0:
-        main()
-    elif len(args) == 1:
-        if args[0] == "refresh":
-            with open(PID_FILE, "r") as file:
-                os.kill(int(file.read()), signal.SIGCONT)
-            sys.exit(0)
-    sys.exit(1)
+    main()

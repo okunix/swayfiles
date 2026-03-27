@@ -21,7 +21,7 @@ set $term foot
 set $browser $BROWSER
 set $menu "wmenu-run -f 'JetBrainsMono Nerd Font 14px' -N '15161e' -n 'c0caf5' -s 'c0caf5' -m 'c0caf5'"
 set $statusbar "$HOME/.local/bin/swaystatus"
-set $statusbar_refresh $statusbar "refresh"
+set $statusbar_refresh pkill -CONT -f $statusbar
 
 # Output configuration
 output * bg ~/.local/share/bg fill
