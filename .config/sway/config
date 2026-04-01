@@ -189,6 +189,26 @@ focus_wrapping no
 floating_modifier $mod normal
 workspace_layout tabbed
 
+#
+# Colorscheme configuration
+#
+
+set $bg      #15161e
+set $overlay #1a1b26
+set $text    #c0caf5
+set $text_hl #cad5ff
+set $border  #414868
+set $primary #005577
+set $accent  #227799
+set $urgent  #b33b00
+
+client.focused          $accent  $primary $text_hl $accent  $accent
+client.urgent           $urgent  $urgent  $text    $urgent  $urgent
+client.focused_inactive $border  $overlay $text    $border  $border
+client.unfocused        $border  $overlay $text    $border  $border
+client.placeholder      $overlay $bg      $text    $overlay $overlay
+client.background       $bg
+
 # Bar configuration
 bar {
     position top
@@ -197,10 +217,14 @@ bar {
     status_edge_padding 4
 
     colors {
-        statusline #c0caf5
-        background #15161e
-        inactive_workspace #414868 #1a1b26 #c0caf5
-        separator #414868
+        statusline $text
+        background $bg
+        separator $border
+
+        focused_workspace  $accent $primary $text_hl
+        inactive_workspace $border $overlay $text
+        active_workspace   $border $border  $text
+        urgent_workspace   $border $urgent  $text
     }
 }
 
