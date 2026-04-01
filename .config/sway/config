@@ -184,7 +184,7 @@ bindsym $mod+Shift+z exec $HOME/.local/scripts/reboot_dmenu
 bindsym $mod+Shift+w exec $HOME/.local/scripts/weather.sh
 bindsym $mod+Shift+b exec $HOME/.local/scripts/bookmarks dmenu
 
-default_border pixel 2
+default_border pixel 1
 focus_wrapping no
 floating_modifier $mod normal
 workspace_layout tabbed
