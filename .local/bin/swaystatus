@@ -51,8 +51,8 @@ def cont_handler(blocks: list[Callable[[], Block | None]]) -> Callable:
 
 
 def print_header(header: Header):
-    print(json.dumps(asdict(header)))
-    print("[", end="")
+    os.write(sys.stdout.fileno(), (json.dumps(asdict(header)) + "\n").encode())
+    os.write(sys.stdout.fileno(), b"[")
     sys.stdout.flush()
 
 
@@ -62,7 +62,7 @@ def print_blocks(blocks: list[Callable[[], Block | None]]):
         text = block()
         if text is not None:
             block_list.append(asdict(text))
-    print(json.dumps(block_list), end=",", flush=True)
+    os.write(sys.stdout.fileno(), (json.dumps(block_list) + ",").encode())
 
 
 #
