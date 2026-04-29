@@ -186,6 +186,7 @@ bindsym $mod+Shift+b exec $HOME/.local/scripts/bookmarks dmenu
 bindsym $mod+Shift+s exec swaymsg bar mode toggle
 
 default_border pixel 1
+hide_edge_borders --i3 none
 focus_wrapping no
 floating_modifier $mod normal
 workspace_layout tabbed
