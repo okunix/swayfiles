@@ -196,12 +196,12 @@ workspace_layout tabbed
 #
 
 set $bg      #15161e
-set $overlay #1a1b26
+set $overlay #15161e
 set $text    #c0caf5
 set $text_hl #cad5ff
-set $border  #414868
+set $border  #15161e
 set $primary #005577
-set $accent  #227799
+set $accent  #005577
 set $urgent  #b33b00
 
 client.focused          $accent  $primary $text_hl $accent  $accent
