@@ -226,7 +226,7 @@ bar {
         focused_workspace  $accent $primary $text_hl
         inactive_workspace $border $overlay $text
         active_workspace   $border $border  $text
-        urgent_workspace   $border $urgent  $text
+        urgent_workspace   $urgent $urgent  $text
     }
 }
 
