@@ -195,11 +195,11 @@ workspace_layout tabbed
 # Colorscheme configuration
 #
 
-set $bg      #15161e
-set $overlay #15161e
+set $bg      #1a1b26e5
+set $overlay #1a1b26e5
 set $text    #c0caf5
 set $text_hl #cad5ff
-set $border  #15161e
+set $border  #1a1b26e5
 set $primary #005577
 set $accent  #005577
 set $urgent  #b33b00
