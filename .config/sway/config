@@ -74,6 +74,7 @@ for_window [window_type="menu"] floating enable
 
 for_window [class="(?i)pinentry"] floating enable
 for_window [app_id="pinentry-qt"] floating enable
+for_window [app_id="floating"] floating enable
 for_window [app_id="pinentry-gtk-2"] floating enable
 for_window [title="(?i)pinentry"] floating enable
 
@@ -195,20 +196,21 @@ workspace_layout tabbed
 # Colorscheme configuration
 #
 
-set $bg      #1a1b26e6
-set $overlay #1a1b26e6
+set $bg      #15161e
+set $overlay #1a1b26
 set $text    #c0caf5
-set $text_hl #cad5ff
-set $border  #1a1b26e6
-set $primary #005577
-set $accent  #005577
+set $text_hl #ffffff
+set $border  #1a1b26
+set $primary #15161e
+set $accent  #c0caf5
 set $urgent  #b33b00
 
-client.focused          $accent  $primary $text_hl $accent  $accent
-client.urgent           $urgent  $urgent  $text    $urgent  $urgent
-client.focused_inactive $border  $overlay $text    $border  $border
-client.unfocused        $border  $overlay $text    $border  $border
-client.placeholder      $overlay $bg      $text    $overlay $overlay
+# target                title    bg       text     indicator border
+client.focused          $border  $primary $text_hl $accent   $accent
+client.urgent           $urgent  $urgent  $text    $urgent   $urgent
+client.focused_inactive $border  $overlay $text    $border   $border
+client.unfocused        $border  $overlay $text    $border   $border
+client.placeholder      $overlay $bg      $text    $overlay  $overlay
 client.background       $bg
 
 # Bar configuration
@@ -223,7 +225,7 @@ bar {
         background $bg
         separator $border
 
-        focused_workspace  $accent $primary $text_hl
+        focused_workspace  $border $primary $text_hl
         inactive_workspace $border $overlay $text
         active_workspace   $border $border  $text
         urgent_workspace   $urgent $urgent  $text
