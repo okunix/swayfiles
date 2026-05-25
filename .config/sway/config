@@ -225,10 +225,10 @@ bar {
         background $bg
         separator $border
 
-        focused_workspace  $border $primary $text_hl
-        inactive_workspace $border $overlay $text
-        active_workspace   $border $border  $text
-        urgent_workspace   $urgent $urgent  $text
+        focused_workspace  $bg $bg $text_hl
+        inactive_workspace $bg $bg $text
+        active_workspace   $bg $bg $text
+        urgent_workspace   $bg $bg $urgent
     }
 }
 
