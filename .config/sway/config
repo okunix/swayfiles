@@ -6,8 +6,23 @@
 # wmenu, foot, and some browser
 # also set dmenu and dmenu-wl aliases to wmenu
 
-# title font
+# Title font
 font pango:JetBrainsMono Nerd Font 8
+
+
+# Colors
+set $bg0 #15161e
+set $bg1 #1a1b26
+set $bg2 #1f202b
+
+set $urgent #b33b00
+
+set $primary #15161e
+set $accent  #c0caf5
+
+set $text     #c0caf5
+set $text_hl  #cad4ff
+set $text_dim #939bc0
 
 # Variables
 set $mod Mod4
@@ -19,7 +34,7 @@ set $right l
 
 set $term foot
 set $browser $BROWSER
-set $menu "wmenu-run -f 'JetBrainsMono Nerd Font 14px' -N '15161e' -n 'c0caf5' -s 'c0caf5' -m 'c0caf5'"
+set $menu "wmenu-run -f 'JetBrainsMono Nerd Font 14px' -N '$bg0' -n '$text_dim' -s '$text_hl' -S '$bg2' -m '$text' -M '$bg0'"
 set $statusbar "$HOME/.local/bin/swaystatus"
 set $statusbar_refresh pkill -CONT -f $statusbar
 
@@ -186,7 +201,7 @@ bindsym $mod+Shift+w exec $HOME/.local/scripts/weather.sh
 bindsym $mod+Shift+b exec $HOME/.local/scripts/bookmarks dmenu
 bindsym $mod+Shift+s exec swaymsg bar mode toggle
 
-default_border pixel 2
+default_border pixel 1
 hide_edge_borders --i3 smart
 focus_wrapping no
 floating_modifier $mod normal
@@ -196,23 +211,13 @@ workspace_layout tabbed
 # Colorscheme configuration
 #
 
-set $bg       #15161e
-set $overlay  #1a1b26
-set $text_dim #939bc0
-set $text     #c0caf5
-set $text_hl  #cad4ff
-set $border   #1a1b26
-set $primary  #15161e
-set $accent   #c0caf5
-set $urgent   #b33b00
-
-# target                title    bg       text     indicator border
-client.focused          $accent  $primary $text_hl $accent   $accent
-client.urgent           $urgent  $urgent  $text $urgent   $urgent
-client.focused_inactive $border  $overlay $text $border   $border
-client.unfocused        $border  $overlay $text $border   $border
-client.placeholder      $overlay $bg      $text $overlay  $overlay
-client.background       $bg
+# target                title   bg   text     indicator border
+client.focused          $accent $bg1 $text_hl $accent   $accent
+client.urgent           $bg1    $bg1 $urgent  $urgent   $bg1
+client.focused_inactive $bg1    $bg1 $text    $bg1      $bg1
+client.unfocused        $bg1    $bg1 $text    $bg1      $bg1
+client.placeholder      $bg1    $bg1 $text    $bg1      $bg1
+client.background       $bg0
 
 # Bar configuration
 bar {
@@ -223,13 +228,13 @@ bar {
 
     colors {
         statusline $text
-        background $bg
-        separator $border
+        background $bg0
+        separator  $bg0
 
-        focused_workspace  $bg $bg $text_hl
-        inactive_workspace $bg $bg $text_dim
-        active_workspace   $bg $bg $text
-        urgent_workspace   $bg $bg $urgent
+        focused_workspace  $bg0 $bg0 $text_hl
+        inactive_workspace $bg0 $bg0 $text_dim
+        active_workspace   $bg0 $bg0 $text
+        urgent_workspace   $bg0 $bg0 $urgent
     }
 }
 
