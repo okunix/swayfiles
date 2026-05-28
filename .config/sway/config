@@ -196,17 +196,18 @@ workspace_layout tabbed
 # Colorscheme configuration
 #
 
-set $bg      #15161e
-set $overlay #1a1b26
-set $text    #c0caf5
-set $text_hl #ffffff
-set $border  #1a1b26
-set $primary #15161e
-set $accent  #c0caf5
-set $urgent  #b33b00
+set $bg       #15161e
+set $overlay  #1a1b26
+set $text_dim #939bc0
+set $text     #c0caf5
+set $text_hl  #cad4ff
+set $border   #1a1b26
+set $primary  #15161e
+set $accent   #c0caf5
+set $urgent   #b33b00
 
 # target                title    bg       text     indicator border
-client.focused          $accent  $primary $text $accent   $accent
+client.focused          $accent  $primary $text_hl $accent   $accent
 client.urgent           $urgent  $urgent  $text $urgent   $urgent
 client.focused_inactive $border  $overlay $text $border   $border
 client.unfocused        $border  $overlay $text $border   $border
@@ -226,7 +227,7 @@ bar {
         separator $border
 
         focused_workspace  $bg $bg $text_hl
-        inactive_workspace $bg $bg $text
+        inactive_workspace $bg $bg $text_dim
         active_workspace   $bg $bg $text
         urgent_workspace   $bg $bg $urgent
     }
