@@ -206,11 +206,11 @@ set $accent  #c0caf5
 set $urgent  #b33b00
 
 # target                title    bg       text     indicator border
-client.focused          $accent  $primary $text_hl $accent   $accent
-client.urgent           $urgent  $urgent  $text    $urgent   $urgent
-client.focused_inactive $border  $overlay $text    $border   $border
-client.unfocused        $border  $overlay $text    $border   $border
-client.placeholder      $overlay $bg      $text    $overlay  $overlay
+client.focused          $accent  $primary $text $accent   $accent
+client.urgent           $urgent  $urgent  $text $urgent   $urgent
+client.focused_inactive $border  $overlay $text $border   $border
+client.unfocused        $border  $overlay $text $border   $border
+client.placeholder      $overlay $bg      $text $overlay  $overlay
 client.background       $bg
 
 # Bar configuration
