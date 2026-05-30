@@ -12,8 +12,8 @@ font pango:JetBrainsMono Nerd Font 8
 
 # Colors
 set $bg0 #15161e
-set $bg1 #1a1b26
-set $bg2 #1f202b
+set $bg1 #1f202b
+set $bg2 #2a2b36
 
 set $urgent #b33b00
 
@@ -213,7 +213,7 @@ workspace_layout tabbed
 
 # target                title   bg   text     indicator border
 client.focused          $accent $bg1 $text_hl $accent   $accent
-client.urgent           $bg1    $bg1 $urgent  $urgent   $bg1
+client.urgent           $bg1    $bg1 $urgent  $bg1      $bg1
 client.focused_inactive $bg1    $bg1 $text    $bg1      $bg1
 client.unfocused        $bg1    $bg1 $text    $bg1      $bg1
 client.placeholder      $bg1    $bg1 $text    $bg1      $bg1
