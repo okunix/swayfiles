@@ -12,8 +12,8 @@ font pango:JetBrainsMono Nerd Font 8
 
 # Colors
 set $bg0 #15161e
-set $bg1 #1f202b
-set $bg2 #2a2b36
+set $bg1 #1a1b26
+set $bg2 #1f202b
 
 set $urgent #b33b00
 
