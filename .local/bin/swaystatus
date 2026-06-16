@@ -238,12 +238,30 @@ def mpd_block() -> Callable[[], Block | None]:
     return func
 
 
+def lang_block() -> Callable[[], Block | None]:
+    def func() -> Block | None:
+        lang_cmd = "swaymsg -t get_inputs | jq -r '.[].xkb_active_layout_name' | grep -v null | sort | uniq | cut -d' ' -f1 | grep -o '^...' | tr '[:upper:]' '[:lower:]'"
+        cmd = subprocess.run(["/bin/sh", "-c", lang_cmd], capture_output=True)
+        if cmd.returncode != 0:
+            return None
+        lines = cmd.stdout.decode().splitlines()
+        if len(lines) < 1:
+            return None
+        if lines[0] == "eng":
+            return None
+        lang = lines[0]
+        return Block(full_text=f"󰗊 {lang}", name="lang", short_text=f"{lang}")
+
+    return func
+
+
 def main():
     header = Header(click_events=False)
     print_header(header)
 
     blocks: list[Callable[[], Block | None]] = [
         # mpd_block(),
+        lang_block(),
         volume_block(),
         wifi_block(),
         ethernet_block(),
