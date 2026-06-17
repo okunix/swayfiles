@@ -70,8 +70,8 @@ input type:keyboard {
 #    xkb_options grp:alt_shift_toggle
 }
 
-bindsym Mod1+Shift_L exec swaymsg input type:keyboard xkb_switch_layout next && $statusbar_refresh
-bindsym Shift+Alt_L exec swaymsg input type:keyboard xkb_switch_layout next && $statusbar_refresh
+bindsym --locked Mod1+Shift_L exec swaymsg input type:keyboard xkb_switch_layout next && $statusbar_refresh
+bindsym --locked Shift+Alt_L exec swaymsg input type:keyboard xkb_switch_layout next && $statusbar_refresh
 
 #
 # Window rules
