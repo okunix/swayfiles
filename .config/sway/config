@@ -45,6 +45,9 @@ output * bg ~/.local/share/bg fill
 xwayland enable
 exec_always xrdb -merge $HOME/.Xresources
 
+# Notification daemon
+exec dunst
+
 # Idle configuration
 exec swayidle -w \
     timeout 300 'swaylock -f -c 000000' \
