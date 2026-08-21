@@ -69,6 +69,9 @@ input type:touchpad {
 }
 
 input type:keyboard {
+    repeat_delay 375
+    repeat_rate 30
+
     xkb_layout us,ru
 #    xkb_options grp:alt_shift_toggle
 }
