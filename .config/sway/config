@@ -100,7 +100,6 @@ for_window [class="(?i)pinentry"] floating enable
 for_window [app_id="pinentry-qt"] floating enable
 for_window [app_id="floating"] floating enable
 for_window [app_id="pinentry-gtk-2"] floating enable
-for_window [title="(?i)pinentry"] floating enable
 
 #
 # Essential bindings
