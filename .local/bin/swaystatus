@@ -10,6 +10,8 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 from typing import Callable
 
+TEXT_COLOR="#c0caf5"
+BG_COLOR="#15161e"
 
 @dataclass
 class Header:
@@ -24,15 +26,15 @@ class Block:
     full_text: str
     name: str
     short_text: str = ""
-    color: str = ""
+    color: str = TEXT_COLOR
     min_width: str = "100%"
     urgent: bool = False
     align: str = "center"
-    background: str = ""
+    background: str = BG_COLOR
     separator: bool = True
     separator_block_width: int = 10
     markup: str = "pango"
-    border: str = ""
+    border: str = BG_COLOR
     border_left: int = 0
     border_right: int = 0
     border_top: int = 0
@@ -112,7 +114,7 @@ def battery_block() -> Callable[[], Block | None]:
             icon = "󰂂"
         if status.lower() == "charging":
             icon = "󰂄"
-        color = ""
+        color = TEXT_COLOR
         if capacity < 21:
             color = "#ff5555"
 
